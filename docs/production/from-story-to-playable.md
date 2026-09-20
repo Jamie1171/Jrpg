@@ -1,6 +1,6 @@
 # From story treatment to a playable Android JRPG
 
-**Status:** Proposed production roadmap, 20 September 2026. No engine project or build pipeline has been implemented yet.
+**Status:** The first Brackenford opening is now implemented in Godot 4.5.1, with a native Android export and automated build workflow. See the [build notes](build-notes.md) and [phone playtesting guide](phone-playtesting.md). The remaining roadmap below describes how to expand that foundation; the full campaign is still in development.
 
 The working example is [The Unfinished Dawn](../story/the-unfinished-dawn-treatment.md). The earlier concepts, including The Hearthroad, remain available. This roadmap allows us to test the new direction before committing to the entire campaign.
 

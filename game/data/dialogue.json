@@ -1,0 +1,26 @@
+{
+ "intro": [
+  ["Rowan", "You’ve put the festival lanterns up early."],
+  ["Mira", "And you’ve come home late. I’ve decided those two things cancel each other out."],
+  ["Tessa", "Sit down before your sister discovers another errand."],
+  ["Mira", "Too late. Orren left his net needles here. Take the parcel by the bar down to the landing, would you?"],
+  ["Rowan", "I cross half the valley, and my first job home is the length of the village."],
+  ["Mira", "Your second is helping me turn the old storehouse into a classroom. I thought I’d start you gently."]
+ ],
+ "parcel": [["Mira", "Net needles, a mended float, and his blue scarf. Tell him I washed it. Twice."], ["Rowan", "A diplomatic delivery, then."]],
+ "mira_wait": [["Mira", "Orren’s at the landing, east of the square. And Rowan? Take your time. It’s good to have you home."]],
+ "mother": [["Tessa", "There’s soup when you’re hungry. I made enough for an army, which was foolish. An army never brings its bowls back."], ["Rowan", "Has there been trouble on the road?"], ["Tessa", "Only talk. Today you’re home, and today that’s enough."]],
+ "delivery": [["Orren", "My needles! She said she’d put them somewhere I couldn’t lose them."], ["Rowan", "Apparently that was under three baskets of laundry."], ["Orren", "Here. Twelve crowns for carrying an old man’s pride. And take the spare rod whenever you fancy it."], ["Rowan", "I thought fishing was mostly waiting."], ["Orren", "Waiting tells you what the fish wants. Your hands decide whether it gets it."], ["Orren", "Cael’s looking for you by the north path. Something about a cart, and definitely not about missing his oldest friend."]],
+ "orren_early": [["Orren", "Morning, Rowan. Your sister has a parcel for me. I’d fetch it myself, but the fish have finally forgiven me for last winter."]],
+ "orren": [["Orren", "Cast beside the reeds for minnows, or into the channel for perch. Watch the water: guide when it turns, reel when it rests, give line when it surges."], ["Orren", "Land three and I’ll pass on my riverglass charm. It’s wasted on someone who can already predict rain with his knees."]],
+ "cael": [["Cael", "Look who remembered where he lives."], ["Rowan", "Look who still stands like someone’s painting him."], ["Cael", "Army habit. Hard to shake. Listen, the lantern-oil cart lost a wheel in the wood. Help me carry a few bottles back?"], ["Rowan", "Mira’s festival lanterns. Of course."], ["Cael", "You take the light ones. I’ll complain about it all the way home."]],
+ "cael_early": [["Cael", "I need a second pair of hands in the wood. Finish Mira’s errand first. I know better than to borrow her brother without asking."]],
+ "woodland": [["Rowan", "Do you remember racing down this path?"], ["Cael", "You took the bridge. I took the river."], ["Rowan", "You fell in."], ["Cael", "That is one interpretation of a decisive tactical manoeuvre."]],
+ "cart": [["Cael", "Mossbacks. They’ve found the spilled grain."], ["Rowan", "Can we go around?"], ["Cael", "Not with the oil. Stay beside me. When they lower their heads, brace — or knock them off balance."], ["Rowan", "I’ll make an opening. You make use of it."]],
+ "victory": [["Rowan", "They’ve gone back into the trees. Everyone in one piece?"], ["Cael", "My dignity’s bruised. Everything else still works."], ["Rowan", "The merchant left thirty crowns for whoever brought the oil in. Try not to spend your half before we get home."], ["Cael", "Let’s call it a party fund. You’ve always been better with the purse."]],
+ "home": [["Mira", "There you are. Lantern oil, my favourite brother, and Cael pretending he didn’t do all the heavy lifting."], ["Rowan", "Favourite by default. There’s only one of me."], ["Mira", "I’d still pick you. Most days."], ["Cael", "Where shall I put these?"], ["Mira", "By the hearth. And ask our traveller whether she’ll stay for supper. She looks like she’s been walking a very long time."]],
+ "ysra": [["Ysra", "Is the north road open?"], ["Rowan", "It was this morning. Are you travelling alone?"], ["Ysra", "For now. I’m Ysra. I tend people who can’t afford to wait for a proper physician."], ["Mira", "Then you can start with a proper meal. The road will still be there afterwards."], ["Ysra", "You’re very sure of that."], ["Mira", "No. But I’m very sure about the soup."], ["Rowan", "For one evening, the world can wait outside."]],
+ "after": [["Mira", "Tomorrow, I’m measuring the storehouse for desks. Tonight, you’re staying for supper. Both are non-negotiable."], ["Rowan", "I missed this place."]],
+ "petra": [["Petra", "If you catch more than you can eat, I’ll take the rest. Six crowns a fish. No bargaining; I’ve already argued with Orren today."]],
+ "waymark": [["Rowan", "Someone’s carved new lines over the old royal crest."], ["Cael", "The garrison’s been marking the roads. Orders from the capital."], ["Rowan", "They could have asked the people who live beside them."], ["Cael", "Orders aren’t much good if everyone gets to argue."], ["Cael", "Come on. We’ve got lanterns to light."]]
+}

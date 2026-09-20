@@ -1,0 +1,68 @@
+name: Build Brackenford Android preview
+
+on:
+  push:
+    branches: [main]
+    paths: ['game/**', 'tools/**', '.github/workflows/android.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-preview
+  cancel-in-progress: false
+
+jobs:
+  android:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 25
+    env:
+      GODOT_VERSION: 4.5.1
+      LIBGL_ALWAYS_SOFTWARE: '1'
+      JRPG_SCREENSHOTS: ${{ github.workspace }}/build/screenshots
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Godot and Android export templates
+        run: python3 tools/install_godot.py
+      - name: Configure Android SDK
+        run: |
+          sdkmanager 'platform-tools' 'build-tools;35.0.1' 'platforms;android-35'
+          python3 tools/configure_android.py
+      - name: Import and test the game rules
+        run: |
+          mkdir -p build
+          godot --headless --path game --editor --import --quit 2>&1 | tee build/import.log
+          ! rg 'SCRIPT ERROR|Parse Error' build/import.log
+          godot --headless --path game --script tests/test_game.gd 2>&1 | tee build/rules.log
+          rg 'RULE_TESTS: .*0 failures' build/rules.log
+          ! rg 'SCRIPT ERROR|^ERROR:' build/rules.log
+      - name: Render and play through the opening
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb
+          xvfb-run -a -s '-screen 0 1280x720x24' godot --path game --audio-driver Dummy -- --qa 2>&1 | tee build/playthrough.log
+          rg 'UI_QA_PASS' build/playthrough.log
+          ! rg 'SCRIPT ERROR|Assertion failed' build/playthrough.log
+          ! rg '^ERROR:' build/playthrough.log
+      - name: Export and verify Android APK
+        run: |
+          godot --headless --path game --export-debug Android ../build/UnfinishedDawn-0.1.0.apk
+          "$ANDROID_HOME/build-tools/35.0.1/apksigner" verify --verbose build/UnfinishedDawn-0.1.0.apk
+          "$ANDROID_HOME/build-tools/35.0.1/zipalign" -c -P 16 4 build/UnfinishedDawn-0.1.0.apk
+          sha256sum build/UnfinishedDawn-0.1.0.apk > build/SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Brackenford-preview-${{ github.run_number }}
+          path: build/
+          retention-days: 30
+      - name: Publish phone download
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "brackenford-${GITHUB_RUN_NUMBER}" \
+            build/UnfinishedDawn-0.1.0.apk build/SHA256SUMS.txt \
+            --target "$GITHUB_SHA" --prerelease \
+            --title "Brackenford opening · build ${GITHUB_RUN_NUMBER}" \
+            --notes-file docs/production/preview-release-notes.md
