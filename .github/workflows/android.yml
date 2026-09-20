@@ -37,18 +37,18 @@ jobs:
         run: |
           mkdir -p build
           godot --headless --path game --editor --import --quit 2>&1 | tee build/import.log
-          ! rg 'SCRIPT ERROR|Parse Error' build/import.log
+          ! grep -E 'SCRIPT ERROR|Parse Error' build/import.log
           godot --headless --path game --script tests/test_game.gd 2>&1 | tee build/rules.log
-          rg 'RULE_TESTS: [0-9]+ checks, 0 failures' build/rules.log
-          ! rg 'SCRIPT ERROR|^ERROR:' build/rules.log
+          grep -E 'RULE_TESTS: [0-9]+ checks, 0 failures' build/rules.log
+          ! grep -E 'SCRIPT ERROR|^ERROR:' build/rules.log
       - name: Render and play through the opening
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq xvfb
           timeout 90s xvfb-run -a -s '-screen 0 1280x720x24' godot --path game --audio-driver Dummy -- --qa 2>&1 | tee build/playthrough.log
-          rg 'UI_QA_PASS' build/playthrough.log
-          ! rg 'SCRIPT ERROR|Assertion failed' build/playthrough.log
-          ! rg '^ERROR:' build/playthrough.log
+          grep -E 'UI_QA_PASS' build/playthrough.log
+          ! grep -E 'SCRIPT ERROR|Assertion failed' build/playthrough.log
+          ! grep -E '^ERROR:' build/playthrough.log
       - name: Export and verify Android APK
         run: |
           godot --headless --path game --export-debug Android ../build/UnfinishedDawn-0.1.0.apk
