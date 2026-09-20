@@ -27,7 +27,7 @@ jobs:
         run: python3 tools/install_godot.py
       - name: Configure Android SDK
         run: |
-          sdkmanager 'platform-tools' 'build-tools;35.0.1' 'platforms;android-35'
+          "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" 'platform-tools' 'build-tools;35.0.1' 'platforms;android-35'
           python3 tools/configure_android.py
       - name: Import and test the game rules
         run: |
