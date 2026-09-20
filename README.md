@@ -4,6 +4,7 @@ A story-led, turn-based JRPG project in pre-production, designed around a mobile
 
 Current creative direction: a cohesive adventure with loss, betrayal, developing party relationships and a decisive confrontation with its main antagonist. Mining, crafting, fishing and other trades offer substantial optional achievement and rewards alongside that story.
 
+- [From story to a playable Android game](docs/production/from-story-to-playable.md): production order, visual approach, remote builds and the first Brackenford milestone.
 - [The Unfinished Dawn — alternative story treatment](docs/story/the-unfinished-dawn-treatment.md): protagonist, antagonist, staggered companion recruitment, revealed backstory, betrayal, chapter progression and ending; includes a separate optional trade progression.
 - [Android JRPG research and story foundations](docs/research/android-jrpg-market-and-story-foundations.md): the original investigation and earlier concepts. **The Hearthroad remains an available option**, alongside The Names We Keep and The Wandering Table. Its recommendation reflects the earlier brief, not a final selection.
 
