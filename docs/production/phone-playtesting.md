@@ -2,7 +2,7 @@
 
 1. Open [Releases](https://github.com/Jamie1171/Jrpg/releases) and choose the newest
    **Brackenford opening** preview.
-2. Download `UnfinishedDawn-0.2.0.apk`, open the download and follow your phone's
+2. Download `UnfinishedDawn-0.2.1.apk`, open the download and follow your phone's
    installation prompts. This is a directly installed development preview, not a
    Play Store listing. Android's installation requirements depend on your device.
 3. Open **Unfinished Dawn**, hold the phone sideways, and choose **Begin your journey**.
@@ -10,6 +10,13 @@
 No game accounts, API keys, subscriptions or network connection are needed to play.
 The APK targets ARM64 Android phones, including the Pixel 9a. Physical-device
 testing is still needed; a successful export does not prove performance on a phone.
+
+## Xbox controller
+
+Left stick moves, right stick rotates, A interacts/selects, B goes back, X opens
+the satchel, Y opens the journal and Menu pauses. Use D-pad or left stick to
+navigate choices; right stick scrolls the journal. Gold borders show selection.
+Touch controls still work. See [the full layout](controller-controls.md).
 
 ## Playing the opening
 

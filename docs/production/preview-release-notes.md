@@ -1,24 +1,19 @@
-**The Unfinished Dawn 0.2.0 — first rotatable 3D preview**
+**The Unfinished Dawn 0.2.1 — Xbox controller controls**
 
-Download `UnfinishedDawn-0.2.0.apk` and install it over the earlier preview to keep
-your local save. ARM64 Android, landscape, offline; no account or paid service.
+Download `UnfinishedDawn-0.2.1.apk` and install over the existing preview to retain
+your save. ARM64 Android, landscape, offline.
 
-This replaces the painted-background exploration with three real 3D locations,
-original Blender characters and skeletal animation, a freely orbiting perspective
-camera, physical collisions and a 3D battle scene. Dialogue portraits use the same
-models. It is an early 3D art pass, not finished commercial-quality artwork.
+- Left stick: move. Right stick: camera.
+- A: interact / activate the highlighted button. B: back.
+- X: satchel. Y: journal. Menu: pause.
+- D-pad or left stick: menu choices. Right stick: journal scrolling.
+- Gold selection border, stick deadzones, held-direction repeat, reconnect and
+  focus-loss handling. Touch remains available.
 
-**Move:** drag the stick at bottom left. **Look:** swipe the right side of the
-world. **Interact:** approach someone or an exit and use the bottom-right button.
-Movement and camera can be controlled with two fingers at once. Desktop controls:
-WASD/arrows, right-mouse drag, E.
+Dialogue defaults to Continue; skipping is a separate selection. B does not skip
+story or escape an active battle. Centre the sticks after closing menus or
+returning from another app.
 
-The story opening, party recruitment, turn-based rules, optional fishing, charm,
-trading, journal, music and saves remain. The opening still ends before the
-festival and raid; mining, smithing, full equipment/classes and the campaign are
-future work. Old saves resume at a safe entrance in their existing location.
-
-Rule tests and a rendered opening run before publishing. Visuals have been
-inspected in Godot. Physical phone performance, heat and battery life are not yet
-verified; this release does not promise 60 FPS. Please try moving while rotating
-the camera, walking to the river and switching away from/resuming the app.
+Controller event tests and the complete rendered opening run before release.
+Physical wireless Xbox pairing/mapping still needs testing on the phone. The
+story, art and gameplay scope are unchanged from the first 3D preview.

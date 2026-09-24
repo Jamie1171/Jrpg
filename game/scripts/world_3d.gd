@@ -426,6 +426,11 @@ func orbit(relative: Vector2) -> void:
 
 func draw_controls() -> void:
 	if not enabled: return
+	if Pad.active:
+		controls.draw_style_box(controller_panel(),Rect2(22,493,274,174))
+		var lines := ["LS  Move     RS  Camera","A  Interact     B  Back","X  Satchel     Y  Journal","Menu  Pause"]
+		for i in range(lines.size()): controls.draw_string(ThemeDB.fallback_font,Vector2(39,522+i*37),lines[i],HORIZONTAL_ALIGNMENT_LEFT,-1,18,Color("f5e9d2"))
+		return
 	var center := stick_origin if move_touch>=0 else Vector2(150,552)
 	controls.draw_circle(center,75,Color(.06,.15,.17,.42))
 	controls.draw_arc(center,75,0,TAU,48,Color(.95,.87,.65,.65),2,true)
@@ -436,8 +441,13 @@ func draw_controls() -> void:
 func _physics_process(delta: float) -> void:
 	if not is_instance_valid(player): return
 	controls.queue_redraw()
-	if not enabled or battle_mode: return
-	var input := stick
+	if not enabled or battle_mode or not Pad.focused: return
+	var input := (stick + Pad.movement()).limit_length()
+	var camera_input: Vector2 = Pad.look()
+	if camera_input != Vector2.ZERO:
+		yaw -= camera_input.x*2.3*delta
+		pitch = clampf(pitch-camera_input.y*1.6*delta,-.85,-.10)
+		look_idle=0
 	if Input.is_physical_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP): input.y-=1
 	if Input.is_physical_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN): input.y+=1
 	if Input.is_physical_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT): input.x-=1
@@ -563,3 +573,9 @@ func terrain(center: Vector2,size: Vector2,forest: bool) -> void:
 	node.material_override=ground_material
 	scene.add_child(node)
 	solid(Vector3(center.x,-.1,center.y),Vector3(size.x,.2,size.y))
+
+func controller_panel() -> StyleBoxFlat:
+	var panel := StyleBoxFlat.new()
+	panel.bg_color=Color(.06,.14,.16,.88)
+	panel.set_corner_radius_all(12)
+	return panel

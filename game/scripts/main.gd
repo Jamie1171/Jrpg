@@ -27,6 +27,11 @@ var toast_time := 0.0
 var toast_label: Label
 var qa := false
 var modal_back: Callable
+var controller_focus_key := ""
+var controller_nav_ready := false
+var controller_nav_direction := Vector2.ZERO
+var controller_repeat := 0.0
+var controller_scroll := 0.0
 
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
@@ -46,7 +51,7 @@ func _ready() -> void:
 	skin.set_stylebox("hover", "Button", style(Color("31565a"),GOLD,10))
 	skin.set_stylebox("pressed", "Button", style(Color("10282d"),GOLD,10))
 	skin.set_stylebox("disabled", "Button", style(Color("243435"),Color("41524e"),10))
-	skin.set_stylebox("focus", "Button", style(Color(0,0,0,0),GOLD,10,2))
+	skin.set_stylebox("focus", "Button", style(Color(.45,.36,.12,.32),GOLD,10,3))
 	theme = skin
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	world = World.new()
@@ -66,6 +71,8 @@ func _ready() -> void:
 	music.volume_db = -15
 	add_child(music)
 	music.finished.connect(func(): music.play())
+	Pad.button_pressed.connect(controller_button)
+	Pad.activity_changed.connect(controller_activity)
 	show_title()
 	if qa:
 		run_qa.call_deferred()
@@ -148,6 +155,12 @@ func shade(alpha: float = 0.55) -> void:
 	overlay.add_child(dim)
 
 func prepare_overlay(new_mode: String, darken: bool = true) -> void:
+	var focused_control := get_viewport().gui_get_focus_owner()
+	controller_focus_key = focus_key(focused_control) if mode==new_mode and focused_control is Button else ""
+	controller_nav_ready=Pad.navigation().length()<.5
+	controller_nav_direction=Vector2.ZERO
+	controller_repeat=0
+	controller_scroll=0
 	mode = new_mode
 	hud.visible = new_mode == "dialogue"
 	world.enabled = false
@@ -155,6 +168,7 @@ func prepare_overlay(new_mode: String, darken: bool = true) -> void:
 	clear(overlay)
 	if darken:
 		shade()
+	controller_focus.call_deferred()
 
 func update_music() -> void:
 	world.motion = GameState.data.settings.motion
@@ -192,7 +206,7 @@ func show_title() -> void:
 		if has_save: confirm_new()
 		else: show_help(show_title))
 	button(overlay,"Settings",Rect2(303,563,230,58),func(): show_settings(show_title))
-	text_at(overlay,"OPENING PROTOTYPE  •  0.2.0  •  OFFLINE",Rect2(58,660,530,30),16,MUTED)
+	text_at(overlay,"OPENING PROTOTYPE  •  0.2.1  •  OFFLINE",Rect2(58,660,530,30),16,MUTED)
 	update_music()
 
 func confirm_new() -> void:
@@ -266,6 +280,8 @@ func refresh_world() -> void:
 	close_overlay()
 
 func close_overlay() -> void:
+	Pad.require_neutral()
+	get_viewport().gui_release_focus()
 	world.exit_battle()
 	clear(overlay)
 	overlay.hide()
@@ -304,11 +320,12 @@ func toast(message: String) -> void:
 		toast_time = 6
 
 func _process(delta: float) -> void:
+	controller_process(delta)
 	if mode == "explore":
 		if is_instance_valid(hint):
 			var nearest: Dictionary = world.nearest_spot()
 			hint.visible = not nearest.is_empty()
-			if not nearest.is_empty(): hint.text = nearest.label
+			if not nearest.is_empty(): hint.text = ("A  ·  " if Pad.active else "") + nearest.label
 		auto_save += delta
 		if auto_save > 12:
 			auto_save = 0
@@ -480,10 +497,10 @@ func show_settings(back: Callable) -> void:
 			child.pressed.connect(back)
 
 func show_help(back: Callable) -> void:
-	show_notice("A few things before you go","MOVE  •  Left stick to walk; swipe the right side to orbit the camera. Approach people, then press the action button. Keyboard: WASD / arrows, right-drag camera, E to interact.\n\nSTORY  •  Gold diamonds mark your next objective. Read it in the top-left card or journal.\n\nBATTLE  •  Rowan’s Opening Cut makes the next two hits stronger. Cael’s Shield Bash cancels an enemy turn. Guard a charge and recover focus.\n\nFISHING  •  No timer. Read the water before choosing. Reel at rest, guide a turn, give line during a surge.",back)
+	show_notice("A few things before you go","TOUCH  •  Left stick to move; swipe right to look. Use the nearby action button.\n\nXBOX  •  LS move, RS camera / scroll. A select, B back, X satchel, Y journal, Menu pause. D-pad / LS navigate choices.\n\nSTORY  •  Follow gold diamonds. Keyboard: WASD / arrows, right-drag camera, E interact.\n\nBATTLE  •  Opening Cut strengthens the next two hits. Shield Bash cancels a foe’s turn. Guard charges; herbs restore health.\n\nFISHING  •  No timer. Reel at rest, guide a turn, give line during a surge.",back)
 
 func show_credits() -> void:
-	show_notice("The people behind the dawn","Created for Jamie’s JRPG project.\n\nStory, implementation, original music and art direction developed with OpenAI Codex. Original 3D characters, skeletons, animations and modular scenery built in Blender. Portraits render these same models in Godot.\n\nBuilt with Godot Engine 4.5.1 (MIT). Interface headings use DejaVu Serif (Bitstream Vera / DejaVu licence). Full notices are in the repository.\n\nThis is an original work inspired by a love of classic role-playing games. Opening prototype 0.2.0.",show_menu)
+	show_notice("The people behind the dawn","Created for Jamie’s JRPG project.\n\nStory, implementation, original music and art direction developed with OpenAI Codex. Original 3D characters, skeletons, animations and modular scenery built in Blender. Portraits render these same models in Godot.\n\nBuilt with Godot Engine 4.5.1 (MIT). Interface headings use DejaVu Serif (Bitstream Vera / DejaVu licence). Full notices are in the repository.\n\nThis is an original work inspired by a love of classic role-playing games. Opening prototype 0.2.1.",show_menu)
 
 func show_notice(title: String, body: String, done: Callable) -> void:
 	modal_back = done
@@ -622,6 +639,7 @@ func capture(name_value: String) -> void:
 
 func run_qa() -> void:
 	await get_tree().create_timer(0.5).timeout
+	await run_controller_qa()
 	await capture("01-title")
 	start_new()
 	await capture("02-dialogue")
@@ -681,6 +699,12 @@ func run_qa() -> void:
 	interact("cart")
 	skip_dialogue()
 	await get_tree().create_timer(.25).timeout
+	await qa_pad_button(JOY_BUTTON_A)
+	assert(battle.actor==1,"Controller selects Strike in battle")
+	await qa_pad_button(JOY_BUTTON_DPAD_RIGHT)
+	assert(get_viewport().gui_get_focus_owner().text.begins_with("Shield Bash"),"Battle commands are reachable with D-pad")
+	await qa_pad_button(JOY_BUTTON_A)
+	assert(battle.heroes[1].mp==4,"Controller activates the selected skill once")
 	await capture("05-battle")
 	var steps := 0
 	while battle.outcome == "" and steps < 40:
@@ -724,3 +748,196 @@ func run_qa() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	get_tree().quit.call_deferred()
+
+func focus_key(control: Control) -> String:
+	if not control is Button: return ""
+	return control.text.trim_prefix("◎ ").split(":")[0]
+
+func controller_buttons() -> Array[Button]:
+	var result: Array[Button] = []
+	for child in overlay.find_children("*","Button",true,false):
+		if child.is_visible_in_tree() and not child.disabled: result.append(child)
+	result.sort_custom(func(a,b): return a.position.y<b.position.y if absf(a.position.y-b.position.y)>20 else a.position.x<b.position.x)
+	return result
+
+func controller_focus() -> void:
+	if not Pad.active or mode=="explore": return
+	var buttons := controller_buttons()
+	if buttons.is_empty(): return
+	var focused_control := get_viewport().gui_get_focus_owner()
+	if focused_control in buttons: return
+	var preferred := controller_focus_key
+	if preferred=="": preferred="Continue  ›" if mode=="dialogue" else "Strike" if mode=="battle" else ""
+	for item in buttons:
+		if focus_key(item)==preferred: item.grab_focus(); return
+	buttons[0].grab_focus()
+
+func controller_activity() -> void:
+	if Pad.active:
+		controller_focus.call_deferred()
+	else:
+		get_viewport().gui_release_focus()
+
+func controller_button(index: int) -> void:
+	if mode=="explore":
+		match index:
+			JOY_BUTTON_A:
+				var spot: Dictionary = world.nearest_spot()
+				if not spot.is_empty(): world.request_interaction(spot.id)
+			JOY_BUTTON_X: show_bag()
+			JOY_BUTTON_Y: show_journal()
+			JOY_BUTTON_START: show_menu()
+		return
+	if index==JOY_BUTTON_A:
+		controller_focus()
+		var selected := get_viewport().gui_get_focus_owner()
+		if selected is Button and selected in controller_buttons(): selected.pressed.emit()
+	elif index in [JOY_BUTTON_B,JOY_BUTTON_START]:
+		if mode in ["menu","notice"] and modal_back.is_valid(): modal_back.call()
+		elif mode=="fishing": close_overlay()
+		elif mode=="battle" and battle.outcome=="defeat": close_overlay()
+
+func controller_process(delta: float) -> void:
+	if not Pad.active or not Pad.focused or mode=="explore": return
+	controller_focus()
+	var nav: Vector2 = Pad.navigation()
+	if nav.length()<.5:
+		controller_nav_ready=true
+		controller_nav_direction=Vector2.ZERO
+		controller_repeat=0
+	elif controller_nav_ready:
+		var direction := Vector2(signf(nav.x),0) if absf(nav.x)>absf(nav.y) else Vector2(0,signf(nav.y))
+		controller_repeat-=delta
+		if direction!=controller_nav_direction or controller_repeat<=0:
+			controller_move_focus(direction)
+			controller_repeat=.32 if direction!=controller_nav_direction else .13
+			controller_nav_direction=direction
+	var scrolls := overlay.find_children("*","ScrollContainer",true,false)
+	if not scrolls.is_empty():
+		var scroll: ScrollContainer=scrolls[0]
+		controller_scroll+=Pad.look().y*550*delta
+		var pixels := int(controller_scroll)
+		if pixels!=0:
+			scroll.scroll_vertical+=pixels
+			controller_scroll-=pixels
+
+func controller_move_focus(direction: Vector2) -> void:
+	var current := get_viewport().gui_get_focus_owner()
+	if not current is Button: controller_focus(); return
+	var origin := current.get_global_rect().get_center()
+	var best: Button
+	var score := INF
+	for item in controller_buttons():
+		if item==current: continue
+		var offset := item.get_global_rect().get_center()-origin
+		var forward := offset.dot(direction)
+		if forward<=1: continue
+		var sideways := absf(offset.cross(direction))
+		var candidate := forward+sideways*3
+		if candidate<score: score=candidate; best=item
+	if is_instance_valid(best): best.grab_focus()
+
+func qa_pad_button(index: int) -> void:
+	var event := InputEventJoypadButton.new()
+	event.device=0
+	event.button_index=index
+	event.pressed=true
+	Input.parse_input_event(event)
+	await get_tree().process_frame
+	event=event.duplicate()
+	event.pressed=false
+	Input.parse_input_event(event)
+	await get_tree().process_frame
+
+func qa_pad_axis(axis: int, value: float) -> void:
+	var event := InputEventJoypadMotion.new()
+	event.device=0
+	event.axis=axis
+	event.axis_value=value
+	Input.parse_input_event(event)
+
+func run_controller_qa() -> void:
+	await qa_pad_button(JOY_BUTTON_A)
+	assert(mode=="dialogue","A starts the journey from the title")
+	await qa_pad_button(JOY_BUTTON_A)
+	assert(dialogue_index==1,"One A press advances exactly one line")
+	await qa_pad_button(JOY_BUTTON_B)
+	assert(dialogue_index==1,"B does not silently skip story")
+	while mode=="dialogue": await qa_pad_button(JOY_BUTTON_A)
+	assert(GameState.data.stage==1 and mode=="explore")
+	var before: Vector2=world.foot
+	qa_pad_axis(JOY_AXIS_LEFT_Y,-1)
+	await get_tree().create_timer(.4).timeout
+	assert(world.foot.distance_to(before)>1,"Left stick moves in the rendered world")
+	qa_pad_axis(JOY_AXIS_LEFT_Y,0)
+	var before_yaw: float=world.yaw
+	qa_pad_axis(JOY_AXIS_RIGHT_X,.8)
+	await get_tree().create_timer(.3).timeout
+	assert(absf(world.yaw-before_yaw)>.3,"Right stick rotates the camera")
+	qa_pad_axis(JOY_AXIS_RIGHT_X,0)
+	before=world.foot
+	qa_pad_axis(JOY_AXIS_LEFT_X,.1)
+	qa_pad_axis(JOY_AXIS_LEFT_Y,.1)
+	await get_tree().create_timer(.2).timeout
+	assert(world.foot.distance_to(before)<.05,"Radial deadzone prevents drift")
+	qa_pad_axis(JOY_AXIS_LEFT_X,0)
+	qa_pad_axis(JOY_AXIS_LEFT_Y,0)
+	await qa_pad_button(JOY_BUTTON_X)
+	assert(mode=="menu" and not world.enabled,"X opens the satchel and stops exploration")
+	await qa_pad_button(JOY_BUTTON_B)
+	assert(mode=="explore","B returns from the satchel")
+	await qa_pad_button(JOY_BUTTON_Y)
+	var scroll: ScrollContainer=overlay.find_children("*","ScrollContainer",true,false)[0]
+	before_yaw=world.yaw
+	qa_pad_axis(JOY_AXIS_RIGHT_Y,1)
+	await get_tree().create_timer(.25).timeout
+	assert(scroll.scroll_vertical>0,"Right stick scrolls journal history")
+	assert(world.yaw==before_yaw,"Menu sticks do not rotate the world")
+	qa_pad_axis(JOY_AXIS_RIGHT_Y,0)
+	await qa_pad_button(JOY_BUTTON_B)
+	await qa_pad_button(JOY_BUTTON_START)
+	qa_pad_axis(JOY_AXIS_LEFT_X,1)
+	await get_tree().create_timer(.1).timeout
+	qa_pad_axis(JOY_AXIS_LEFT_X,0)
+	await get_tree().process_frame
+	assert(get_viewport().gui_get_focus_owner().text=="Settings","Left stick moves the visible menu focus")
+	await qa_pad_button(JOY_BUTTON_A)
+	await qa_pad_button(JOY_BUTTON_DPAD_DOWN)
+	var previous_motion: bool=GameState.data.settings.motion
+	await qa_pad_button(JOY_BUTTON_A)
+	assert(GameState.data.settings.motion!=previous_motion,"Focused setting toggles")
+	assert(get_viewport().gui_get_focus_owner().text.begins_with("Walking animation:"),"Focus survives rebuilding a settings page")
+	await capture("10-controller-settings")
+	await qa_pad_button(JOY_BUTTON_A)
+	await qa_pad_button(JOY_BUTTON_B)
+	assert(mode=="menu","B returns to the parent menu")
+	await qa_pad_button(JOY_BUTTON_DPAD_DOWN)
+	await qa_pad_button(JOY_BUTTON_A)
+	assert(mode=="notice","Controller can open the help page")
+	await capture("12-controller-help")
+	await qa_pad_button(JOY_BUTTON_B)
+	await qa_pad_button(JOY_BUTTON_B)
+	assert(mode=="explore")
+	world.foot=Vector2(0,-1.6)
+	await qa_pad_button(JOY_BUTTON_A)
+	assert(mode=="dialogue","A interacts with a nearby NPC")
+	await qa_pad_button(JOY_BUTTON_DPAD_LEFT)
+	assert(get_viewport().gui_get_focus_owner().text=="Skip scene")
+	await qa_pad_button(JOY_BUTTON_A)
+	assert(mode=="explore","Dialogue skip remains a deliberate selectable action")
+	qa_pad_axis(JOY_AXIS_LEFT_Y,-1)
+	Pad.connection_changed(0,false)
+	assert(Pad.movement()==Vector2.ZERO and not Pad.active,"Disconnect clears held movement")
+	Pad._notification(NOTIFICATION_APPLICATION_FOCUS_OUT)
+	qa_pad_axis(JOY_AXIS_LEFT_Y,-1)
+	assert(Pad.movement()==Vector2.ZERO,"Background input is ignored")
+	Pad._notification(NOTIFICATION_APPLICATION_FOCUS_IN)
+	qa_pad_axis(JOY_AXIS_LEFT_Y,0)
+	await qa_pad_button(JOY_BUTTON_START)
+	assert(mode=="menu","Controller works again after reconnection and focus return")
+	await qa_pad_button(JOY_BUTTON_B)
+	await capture("11-controller-exploration")
+	show_title()
+	Pad.reset()
+	Pad.set_active(false)
+	print("CONTROLLER_QA_PASS: title, analog movement/look, drift, interaction, menu navigation, settings focus, scrolling, reconnect and app focus")

@@ -2,7 +2,7 @@
 
 A story-led, turn-based JRPG designed around a mobile playtesting workflow and a zero additional development-spend target.
 
-**The Brackenford opening is now real, freely rotatable 3D in Godot 4.5.1 (0.2.0).**
+**The Brackenford opening is now real, freely rotatable 3D in Godot 4.5.1 (0.2.1).**
 
 ![Brackenford in the playable game](docs/preview/village.webp)
 
@@ -17,6 +17,7 @@ movement stick and a right-side swipe camera. This is an early 3D art pass, not
 the full game or finished commercial-quality art.
 
 - [3D direction and asset pipeline](docs/production/3d-direction.md)
+- [Xbox controller controls](docs/production/controller-controls.md)
 - [Phone playtesting guide](docs/production/phone-playtesting.md)
 - [Build and technical notes](docs/production/build-notes.md)
 - [Art and audio provenance](docs/art/asset-manifest.md)
