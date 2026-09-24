@@ -1,0 +1,159 @@
+{
+  "Rowan": {
+    "triangles": 2878,
+    "vertices": 1570,
+    "surfaces": 1,
+    "bones": 11
+  },
+  "Cael": {
+    "triangles": 2765,
+    "vertices": 1502,
+    "surfaces": 1,
+    "bones": 11
+  },
+  "Mira": {
+    "triangles": 2863,
+    "vertices": 1544,
+    "surfaces": 1,
+    "bones": 11
+  },
+  "Tessa": {
+    "triangles": 2863,
+    "vertices": 1544,
+    "surfaces": 1,
+    "bones": 11
+  },
+  "Ysra": {
+    "triangles": 3810,
+    "vertices": 2054,
+    "surfaces": 1,
+    "bones": 11
+  },
+  "Orren": {
+    "triangles": 3287,
+    "vertices": 1772,
+    "surfaces": 1,
+    "bones": 11
+  },
+  "Petra": {
+    "triangles": 2863,
+    "vertices": 1544,
+    "surfaces": 1,
+    "bones": 11
+  },
+  "wall": {
+    "triangles": 44,
+    "vertices": 24,
+    "surfaces": 1
+  },
+  "beam": {
+    "triangles": 44,
+    "vertices": 24,
+    "surfaces": 1
+  },
+  "grass": {
+    "triangles": 7,
+    "vertices": 21,
+    "surfaces": 1
+  },
+  "flower": {
+    "triangles": 232,
+    "vertices": 130,
+    "surfaces": 1
+  },
+  "table": {
+    "triangles": 268,
+    "vertices": 152,
+    "surfaces": 1
+  },
+  "hill": {
+    "triangles": 80,
+    "vertices": 42,
+    "surfaces": 1
+  },
+  "roof": {
+    "triangles": 156,
+    "vertices": 98,
+    "surfaces": 1
+  },
+  "tree": {
+    "triangles": 484,
+    "vertices": 260,
+    "surfaces": 1
+  },
+  "window": {
+    "triangles": 260,
+    "vertices": 152,
+    "surfaces": 1
+  },
+  "door": {
+    "triangles": 204,
+    "vertices": 122,
+    "surfaces": 1
+  },
+  "crate": {
+    "triangles": 188,
+    "vertices": 120,
+    "surfaces": 1
+  },
+  "barrel": {
+    "triangles": 248,
+    "vertices": 132,
+    "surfaces": 1
+  },
+  "bench": {
+    "triangles": 68,
+    "vertices": 40,
+    "surfaces": 1
+  },
+  "fence": {
+    "triangles": 120,
+    "vertices": 68,
+    "surfaces": 1
+  },
+  "well": {
+    "triangles": 168,
+    "vertices": 108,
+    "surfaces": 1
+  },
+  "lantern": {
+    "triangles": 164,
+    "vertices": 96,
+    "surfaces": 1
+  },
+  "market_red": {
+    "triangles": 728,
+    "vertices": 420,
+    "surfaces": 1
+  },
+  "market_gold": {
+    "triangles": 728,
+    "vertices": 420,
+    "surfaces": 1
+  },
+  "cart": {
+    "triangles": 716,
+    "vertices": 388,
+    "surfaces": 1
+  },
+  "mossback": {
+    "triangles": 1208,
+    "vertices": 656,
+    "surfaces": 1
+  },
+  "rock": {
+    "triangles": 20,
+    "vertices": 12,
+    "surfaces": 1
+  },
+  "bush": {
+    "triangles": 80,
+    "vertices": 42,
+    "surfaces": 1
+  },
+  "paver": {
+    "triangles": 20,
+    "vertices": 12,
+    "surfaces": 1
+  }
+}

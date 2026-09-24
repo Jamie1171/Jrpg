@@ -2,7 +2,7 @@
 
 1. Open [Releases](https://github.com/Jamie1171/Jrpg/releases) and choose the newest
    **Brackenford opening** preview.
-2. Download `UnfinishedDawn-0.1.0.apk`, open the download and follow your phone's
+2. Download `UnfinishedDawn-0.2.0.apk`, open the download and follow your phone's
    installation prompts. This is a directly installed development preview, not a
    Play Store listing. Android's installation requirements depend on your device.
 3. Open **Unfinished Dawn**, hold the phone sideways, and choose **Begin your journey**.
@@ -13,9 +13,13 @@ testing is still needed; a successful export does not prove performance on a pho
 
 ## Playing the opening
 
-Tap open ground to walk. Tap a person or a circular marker to walk over and interact,
-or use the interaction button at the bottom right when nearby. The gold diamond
-marks the next story objective, including the exit needed to reach another location.
+Drag the left stick to move. Swipe the right side of the world to rotate the
+camera; two fingers can move and look simultaneously. Approach people or exits,
+then use the bottom-right action button. Gold diamonds mark the next objective.
+The camera gently recentres after moving forward and shortens near walls.
+
+Install this APK over the earlier preview to retain your save. An old saved pixel
+position moves to a safe entrance in the same map; story and inventory remain.
 
 Read conversations with **Continue**. **Skip scene** preserves the conversation in
 the journal and applies the same story progress. No choices depend on hearing audio.
@@ -49,6 +53,8 @@ For the first phone playtest, please check:
 
 - Can you read the dialogue and easily tap the buttons without zooming?
 - Can you walk to the landing and reach the woodland cart?
+- Can you move and rotate simultaneously without a finger getting stuck?
+- Does the camera avoid walls and trees? Does the phone remain comfortable after 10 minutes?
 - Is the battle's charge warning clear, and does victory feel earned?
 - Does fishing feel like a small skill to learn?
 - Does **Save & title → Continue** return you to the correct objective?

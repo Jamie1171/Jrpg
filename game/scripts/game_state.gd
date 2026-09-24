@@ -10,7 +10,7 @@ func _ready() -> void:
 	data = fresh()
 
 func fresh() -> Dictionary:
-	return {"version":1, "stage":0, "map":"inn", "position":[650,480],
+	return {"version":1, "stage":0, "map":"inn", "position":[0,4],
 		"gold":0, "herbs":3, "fish":0, "catches":0, "charm":false,
 		"party":false, "events":[], "history":[],
 		"settings":{"music":true, "motion":true, "large_text":false}}

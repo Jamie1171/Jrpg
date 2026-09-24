@@ -1,21 +1,24 @@
-The first playable opening of **The Unfinished Dawn**, Jamie's story-first JRPG.
+**The Unfinished Dawn 0.2.0 — first rotatable 3D preview**
 
-Download `UnfinishedDawn-0.1.0.apk` on your Android phone, open it and follow
-Android's installation prompts. It runs offline in landscape on ARM64 Android
-devices. This is a development preview, with a separate test package identity.
+Download `UnfinishedDawn-0.2.0.apk` and install it over the earlier preview to keep
+your local save. ARM64 Android, landscape, offline; no account or paid service.
 
-Includes:
+This replaces the painted-background exploration with three real 3D locations,
+original Blender characters and skeletal animation, a freely orbiting perspective
+camera, physical collisions and a 3D battle scene. Dialogue portraits use the same
+models. It is an early 3D art pass, not finished commercial-quality artwork.
 
-- Three illustrated locations: the Hearth & Heron, Brackenford and the North Wood.
-- Rowan, Mira, Tessa, Cael, Orren, Petra and Ysra, with authored conversations.
-- A delivery quest, party recruitment, a turn-based battle and Ysra's arrival.
-- Optional fishing with tactical choices, sellable catches and a permanent charm.
-- Touch movement, dialogue portraits, journal, inventory, music and local saves.
+**Move:** drag the stick at bottom left. **Look:** swipe the right side of the
+world. **Interact:** approach someone or an exit and use the bottom-right button.
+Movement and camera can be controlled with two fingers at once. Desktop controls:
+WASD/arrows, right-mouse drag, E.
 
-The playable story ends before the festival and the raid. The full campaign,
-mining, smithing, crafting, additional classes and equipment systems are future
-work. This build uses illustrated 2D environments and rendered-style sprites.
+The story opening, party recruitment, turn-based rules, optional fishing, charm,
+trading, journal, music and saves remain. The opening still ends before the
+festival and raid; mining, smithing, full equipment/classes and the campaign are
+future work. Old saves resume at a safe entrance in their existing location.
 
-Automated rules and a rendered playthrough run before every APK build. Actual
-performance, touch comfort and Android app switching still need phone playtesting.
-Tell us where you were, what you tapped, and what happened if anything goes wrong.
+Rule tests and a rendered opening run before publishing. Visuals have been
+inspected in Godot. Physical phone performance, heat and battery life are not yet
+verified; this release does not promise 60 FPS. Please try moving while rotating
+the camera, walking to the river and switching away from/resuming the app.

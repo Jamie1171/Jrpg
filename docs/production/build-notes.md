@@ -1,3 +1,9 @@
+# Current build: 0.2.0
+
+The active renderer is now true 3D. See [3D direction](3d-direction.md) for the
+current architecture, asset pipeline and limitations. The 0.1.0 notes below
+record the earlier implementation and are retained as history.
+
 # The first playable build
 
 Engine: **Godot 4.5.1**, GDScript, Compatibility renderer. World coordinates are

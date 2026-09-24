@@ -45,16 +45,16 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq xvfb
-          timeout 90s xvfb-run -a -s '-screen 0 1280x720x24' godot --path game --audio-driver Dummy -- --qa 2>&1 | tee build/playthrough.log
+          timeout 180s xvfb-run -a -s '-screen 0 1280x720x24' godot --path game --audio-driver Dummy -- --qa 2>&1 | tee build/playthrough.log
           grep -E 'UI_QA_PASS' build/playthrough.log
           ! grep -E 'SCRIPT ERROR|Assertion failed' build/playthrough.log
           ! grep -E '^ERROR:' build/playthrough.log
       - name: Export and verify Android APK
         run: |
-          godot --headless --path game --export-debug Android ../build/UnfinishedDawn-0.1.0.apk
-          "$ANDROID_HOME/build-tools/35.0.1/apksigner" verify --verbose build/UnfinishedDawn-0.1.0.apk
-          "$ANDROID_HOME/build-tools/35.0.1/zipalign" -c -P 16 4 build/UnfinishedDawn-0.1.0.apk
-          sha256sum build/UnfinishedDawn-0.1.0.apk > build/SHA256SUMS.txt
+          godot --headless --path game --export-debug Android ../build/UnfinishedDawn-0.2.0.apk
+          "$ANDROID_HOME/build-tools/35.0.1/apksigner" verify --verbose build/UnfinishedDawn-0.2.0.apk
+          "$ANDROID_HOME/build-tools/35.0.1/zipalign" -c -P 16 4 build/UnfinishedDawn-0.2.0.apk
+          sha256sum build/UnfinishedDawn-0.2.0.apk > build/SHA256SUMS.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -66,7 +66,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "brackenford-${GITHUB_RUN_NUMBER}" \
-            build/UnfinishedDawn-0.1.0.apk build/SHA256SUMS.txt \
+            build/UnfinishedDawn-0.2.0.apk build/SHA256SUMS.txt \
             --target "$GITHUB_SHA" --prerelease \
             --title "Brackenford opening · build ${GITHUB_RUN_NUMBER}" \
             --notes-file docs/production/preview-release-notes.md

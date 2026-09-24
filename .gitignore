@@ -6,3 +6,5 @@ build/
 tools/.secrets/
 __pycache__/
 *.pyc
+
+*.blend1

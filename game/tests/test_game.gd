@@ -2,7 +2,6 @@ extends SceneTree
 const Battle = preload("res://scripts/battle_model.gd")
 const Fishing = preload("res://scripts/fishing_model.gd")
 const State = preload("res://scripts/game_state.gd")
-const World = preload("res://scripts/world_view.gd")
 var failures := 0
 var checks := 0
 
@@ -95,18 +94,6 @@ func run() -> void:
 	var recklessness = Fishing.new()
 	while recklessness.outcome=="": recklessness.act("reel")
 	check(recklessness.outcome=="escaped","Ignoring tension can lose a fish")
-	var world = World.new()
-	root.add_child(world)
-	for map_id in ["inn","brackenford","woodland"]:
-		world.setup(map_id,Vector2(650,460),[],false,"")
-		for dest in [Vector2(20,20),Vector2(1200,690),Vector2(1070,510),Vector2(610,245)]:
-			var path: Array[Vector2] = world.route(world.foot,dest)
-			check(not path.is_empty(),"Navigation finds a route on " + map_id)
-			var previous: Vector2 = world.foot
-			for point in path:
-				check(world.visible_segment(previous,point),"Navigation stays within walkable floor")
-				previous=point
-	world.queue_free()
 	state.queue_free()
 	print("RULE_TESTS: %d checks, %d failures" % [checks,failures])
 	quit(1 if failures>0 else 0)

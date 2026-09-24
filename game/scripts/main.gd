@@ -1,15 +1,13 @@
 extends Control
-const World = preload("res://scripts/world_view.gd")
+const World = preload("res://scripts/world_3d.gd")
 const Battle = preload("res://scripts/battle_model.gd")
 const Fishing = preload("res://scripts/fishing_model.gd")
-const PORTRAITS = preload("res://assets/art/portraits.webp")
-const PEOPLE = preload("res://assets/art/characters.webp")
 const SERIF = preload("res://assets/fonts/DejaVuSerif.ttf")
 const INK = Color("172d33")
 const PAPER = Color("f5e9d2")
 const GOLD = Color("e3be75")
 const MUTED = Color("bdd0c9")
-var world: Node2D
+var world: Node3D
 var hud: Control
 var overlay: Control
 var status: Label
@@ -32,6 +30,7 @@ var modal_back: Callable
 
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
+	Engine.max_fps = 60
 	qa = "--qa" in OS.get_cmdline_user_args()
 	if qa:
 		GameState.saving_enabled = false
@@ -134,8 +133,7 @@ func picture(parent: Node, texture: Texture2D, rect: Rect2, region: Rect2 = Rect
 	return node
 
 func portrait(parent: Node, name_value: String, rect: Rect2) -> void:
-	var index: int = {"Rowan":0,"Cael":1,"Mira":2,"Tessa":3,"Ysra":4,"Orren":5}.get(name_value,0)
-	picture(parent,PORTRAITS,rect,Rect2((index%3)*512,(index/3)*512,512,512))
+	picture(parent,world.get_portrait(name_value),rect)
 
 func clear(parent: Node) -> void:
 	for child in parent.get_children():
@@ -151,6 +149,7 @@ func shade(alpha: float = 0.55) -> void:
 
 func prepare_overlay(new_mode: String, darken: bool = true) -> void:
 	mode = new_mode
+	hud.visible = new_mode == "dialogue"
 	world.enabled = false
 	overlay.show()
 	clear(overlay)
@@ -169,7 +168,9 @@ func update_music() -> void:
 
 func show_title() -> void:
 	clear(hud)
-	world.setup("brackenford",Vector2(600,480),[],false,"")
+	world.setup("brackenford",Vector2(0,8),[],false,"")
+	world.pivot.rotation = Vector3(-0.3,0,0)
+	world.arm.spring_length = 9
 	prepare_overlay("title",false)
 	var shadow := ColorRect.new()
 	shadow.color = Color(0.025,0.075,0.09,0.73)
@@ -191,7 +192,7 @@ func show_title() -> void:
 		if has_save: confirm_new()
 		else: show_help(show_title))
 	button(overlay,"Settings",Rect2(303,563,230,58),func(): show_settings(show_title))
-	text_at(overlay,"OPENING PROTOTYPE  •  0.1.0  •  OFFLINE",Rect2(58,660,530,30),16,MUTED)
+	text_at(overlay,"OPENING PROTOTYPE  •  0.2.0  •  OFFLINE",Rect2(58,660,530,30),16,MUTED)
 	update_music()
 
 func confirm_new() -> void:
@@ -215,7 +216,7 @@ func enter_game() -> void:
 		dialogue("intro",func():
 			GameState.event("intro",1)
 			refresh_world()
-			toast("Tap the ground to walk. Gold diamonds mark your next objective."))
+			toast("Move with the left stick. Swipe the right side to look around."))
 	elif GameState.load_message != "":
 		toast(GameState.load_message)
 
@@ -265,9 +266,11 @@ func refresh_world() -> void:
 	close_overlay()
 
 func close_overlay() -> void:
+	world.exit_battle()
 	clear(overlay)
 	overlay.hide()
 	mode = "explore"
+	hud.show()
 	world.enabled = true
 	build_hud()
 
@@ -281,15 +284,15 @@ func build_hud() -> void:
 	button(hud,"Journal",Rect2(824,21,138,60),show_journal)
 	button(hud,"Satchel",Rect2(978,21,134,60),show_bag)
 	button(hud,"Menu",Rect2(1128,21,130,60),show_menu)
-	box(hud,Rect2(22,629,357,69),Color(0.06,0.14,0.16,0.91))
-	portrait(hud,"Rowan",Rect2(29,635,55,55))
-	text_at(hud,"Rowan" + ("  ·  Cael" if GameState.data.party else ""),Rect2(96,635,265,28),22)
-	text_at(hud,"Courier  ·  %d crowns" % GameState.data.gold,Rect2(96,666,265,22),16,GOLD)
+	box(hud,Rect2(310,629,357,69),Color(0.06,0.14,0.16,0.91))
+	portrait(hud,"Rowan",Rect2(317,635,55,55))
+	text_at(hud,"Rowan" + ("  ·  Cael" if GameState.data.party else ""),Rect2(384,635,265,28),22)
+	text_at(hud,"Courier  ·  %d crowns" % GameState.data.gold,Rect2(384,666,265,22),16,GOLD)
 	hint = button(hud,"",Rect2(924,627,334,71),func():
 		var nearest: Dictionary = world.nearest_spot()
 		if not nearest.is_empty(): world.request_interaction(nearest.id))
 	hint.hide()
-	toast_label = text_at(hud,"",Rect2(397,636,500,63),20,PAPER)
+	toast_label = text_at(hud,"",Rect2(385,551,500,63),20,PAPER)
 	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	toast_label.add_theme_color_override("font_shadow_color",Color.BLACK)
 	toast_label.add_theme_constant_override("shadow_offset_x",2)
@@ -323,8 +326,8 @@ func interact(id: String) -> void:
 				dialogue("after" if GameState.data.stage >= 7 else "mira_wait",close_overlay)
 		"parcel": dialogue("parcel",func(): GameState.event("parcel",2); refresh_world(); toast("Mira’s parcel added to your satchel."))
 		"tessa": dialogue("mother",close_overlay)
-		"exit_inn": change_map("brackenford",Vector2(315,385))
-		"inn": change_map("inn",Vector2(1033,564))
+		"exit_inn": change_map("brackenford",Vector2(-13,0))
+		"inn": change_map("inn",Vector2(0,6))
 		"orren":
 			if GameState.data.stage == 2:
 				dialogue("delivery",func(): GameState.event("delivery",3); refresh_world(); toast("+12 crowns • Fishing unlocked at the landing."))
@@ -338,10 +341,10 @@ func interact(id: String) -> void:
 			if GameState.data.stage < 4:
 				toast("Cael is waiting by the north path. Finish Mira’s delivery first.")
 			else:
-				change_map("woodland",Vector2(680,598))
+				change_map("woodland",Vector2(0,16))
 				if GameState.data.stage == 4:
 					dialogue("woodland",func(): GameState.event("woodland",5); refresh_world())
-		"south": change_map("brackenford",Vector2(620,282))
+		"south": change_map("brackenford",Vector2(0,-23))
 		"cart":
 			if GameState.data.stage == 5: dialogue("cart",start_battle)
 			else: toast("The oil is safely packed. The merchant can collect his cart tomorrow.")
@@ -432,7 +435,7 @@ func show_bag() -> void:
 	text_at(overlay,"DELIVERY\n" + quest_item,Rect2(150,253,940,80),23)
 	text_at(overlay,"SUPPLIES\n%d healing herbs • restores 32 health in battle\n%d fresh fish • worth 6 crowns each at Petra’s stall" % [GameState.data.herbs,GameState.data.fish],Rect2(150,350,940,119),23)
 	text_at(overlay,"KEEPSAKE\n" + ("Riverglass charm • equipped • +4 maximum health" if GameState.data.charm else "Orren’s charm • earn it by landing three fish"),Rect2(150,480,920,85),23,MUTED)
-	var can_trade: bool = GameState.data.map == "brackenford" and world.foot.distance_to(Vector2(851,389)) < 150
+	var can_trade: bool = GameState.data.map == "brackenford" and world.is_near("petra")
 	var sell := button(overlay,"Sell fish (%d crowns)" % (GameState.data.fish*6),Rect2(148,594,352,57),func():
 		GameState.sell_fish()
 		show_bag())
@@ -442,8 +445,8 @@ func show_bag() -> void:
 func show_menu() -> void:
 	sheet("A moment’s rest","Your journey saves automatically at checkpoints and as you explore.")
 	button(overlay,"Return to the village",Rect2(150,211,446,66),func():
-		if GameState.data.map == "inn": change_map("inn",Vector2(650,480))
-		else: change_map("brackenford",Vector2(615,440)))
+		if GameState.data.map == "inn": change_map("inn",Vector2(0,4))
+		else: change_map("brackenford",Vector2(0,7)))
 	button(overlay,"Settings",Rect2(625,211,446,66),func(): show_settings(show_menu))
 	button(overlay,"How to play",Rect2(150,299,446,66),func(): show_help(show_menu))
 	button(overlay,"Credits",Rect2(625,299,446,66),show_credits)
@@ -477,10 +480,10 @@ func show_settings(back: Callable) -> void:
 			child.pressed.connect(back)
 
 func show_help(back: Callable) -> void:
-	show_notice("A few things before you go","WALK  •  Tap open ground. Tap a person or marker to approach and interact. On a keyboard, use WASD / arrows and E.\n\nSTORY  •  Gold diamonds mark your next objective. Read it in the top-left card or journal.\n\nBATTLE  •  Rowan’s Opening Cut makes the next two hits stronger. Cael’s Shield Bash cancels an enemy turn. Guard a charge and recover focus.\n\nFISHING  •  No timer. Read the water before choosing. Reel at rest, guide a turn, give line during a surge.",back)
+	show_notice("A few things before you go","MOVE  •  Left stick to walk; swipe the right side to orbit the camera. Approach people, then press the action button. Keyboard: WASD / arrows, right-drag camera, E to interact.\n\nSTORY  •  Gold diamonds mark your next objective. Read it in the top-left card or journal.\n\nBATTLE  •  Rowan’s Opening Cut makes the next two hits stronger. Cael’s Shield Bash cancels an enemy turn. Guard a charge and recover focus.\n\nFISHING  •  No timer. Read the water before choosing. Reel at rest, guide a turn, give line during a surge.",back)
 
 func show_credits() -> void:
-	show_notice("The people behind the dawn","Created for Jamie’s JRPG project.\n\nStory, implementation, original music and art direction developed with OpenAI Codex. Backgrounds, character sheets and portraits generated with OpenAI image generation.\n\nBuilt with Godot Engine 4.5.1 (MIT). Interface headings use DejaVu Serif (Bitstream Vera / DejaVu licence). Full notices are in the repository.\n\nThis is an original work inspired by a love of classic role-playing games. Opening prototype 0.1.0.",show_menu)
+	show_notice("The people behind the dawn","Created for Jamie’s JRPG project.\n\nStory, implementation, original music and art direction developed with OpenAI Codex. Original 3D characters, skeletons, animations and modular scenery built in Blender. Portraits render these same models in Godot.\n\nBuilt with Godot Engine 4.5.1 (MIT). Interface headings use DejaVu Serif (Bitstream Vera / DejaVu licence). Full notices are in the repository.\n\nThis is an original work inspired by a love of classic role-playing games. Opening prototype 0.2.0.",show_menu)
 
 func show_notice(title: String, body: String, done: Callable) -> void:
 	modal_back = done
@@ -503,17 +506,16 @@ func start_battle() -> void:
 	GameState.save_game()
 	battle = Battle.new(GameState.data.charm,int(GameState.data.herbs))
 	selected_enemy = 0
+	world.enter_battle()
 	show_battle()
 
 func show_battle() -> void:
 	prepare_overlay("battle",false)
-	picture(overlay,World.BACKGROUNDS.woodland,Rect2(0,0,1280,720))
 	box(overlay,Rect2(24,18,1232,84),Color(0.055,0.12,0.14,0.95),GOLD)
 	text_at(overlay,"The stranded cart",Rect2(45,29,448,42),30,PAPER,true)
 	text_at(overlay,"ROUND %d  •  %s" % [battle.round_number,battle.intent()],Rect2(482,36,748,44),21,GOLD)
 	for i in range(2):
 		var hero: Dictionary = battle.heroes[i]
-		picture(overlay,World.WALK,Rect2(365+i*137,225+i*30,200,200),Rect2((1 if i==0 else 4)*256,2*256,256,256))
 		box(overlay,Rect2(27,125+i*119,340,104),Color(0.055,0.12,0.14,0.96),GOLD if battle.actor==i else Color("566d62"))
 		portrait(overlay,hero.name,Rect2(34,134+i*119,73,73))
 		text_at(overlay,"%s  %s" % [hero.name,"‹ YOUR TURN" if battle.actor==i else ""],Rect2(120,132+i*119,236,28),19,GOLD if battle.actor==i else PAPER)
@@ -521,8 +523,6 @@ func show_battle() -> void:
 	for i in range(2):
 		var enemy: Dictionary = battle.enemies[i]
 		var x := 720.0 + i*269
-		if enemy.hp > 0:
-			picture(overlay,PEOPLE,Rect2(x-48,216+i*38,265,265),Rect2(512,512,512,512))
 		var target := button(overlay,("◎ " if selected_enemy==i else "")+enemy.name,Rect2(x-43,118,250,58),func(): selected_enemy=i; show_battle())
 		target.disabled = enemy.hp <= 0
 		meter(overlay,Vector2(x-31,187),222,enemy.hp,enemy.max_hp,Color("ca916b"),"%d / %d HP%s" % [enemy.hp,enemy.max_hp," • exposed" if enemy.exposed>0 else ""])
@@ -550,7 +550,9 @@ func show_battle() -> void:
 	herb.disabled = battle.herbs <= 0 or battle.heroes.all(func(h): return h.hp==h.max_hp)
 
 func battle_action(action: String) -> void:
+	var actor: int = battle.actor
 	if battle.act(action,selected_enemy):
+		world.battle_feedback(actor,battle.enemies)
 		if battle.enemies[selected_enemy].hp <= 0:
 			selected_enemy = 1-selected_enemy
 		show_battle()
@@ -624,22 +626,51 @@ func run_qa() -> void:
 	start_new()
 	await capture("02-dialogue")
 	skip_dialogue()
-	# Exercise the actual input route, not only the story callbacks.
-	var tap := InputEventMouseButton.new()
-	tap.position = Vector2(730,500)
-	tap.global_position = tap.position
-	tap.button_index = MOUSE_BUTTON_LEFT
-	tap.pressed = true
-	Input.parse_input_event(tap)
-	var release := tap.duplicate()
-	release.pressed = false
-	Input.parse_input_event(release)
-	await get_tree().create_timer(0.8).timeout
-	assert(world.foot.distance_to(Vector2(730,500)) < 12,"Ground tap moves Rowan")
+	world.setup("inn",Vector2(650,480),map_spots("inn"),false,active_guide())
+	assert(world.foot.distance_to(Vector2(0,4))<.1,"Legacy pixel position migrates to safe 3D spawn")
+	# Two fingers can move and orbit together, then modal input resets both.
+	var before: Vector2 = world.foot
+	var touch := InputEventScreenTouch.new()
+	touch.index=1; touch.position=Vector2(150,552); touch.pressed=true
+	Input.parse_input_event(touch)
+	await get_tree().process_frame
+	var drag := InputEventScreenDrag.new()
+	drag.index=1; drag.position=Vector2(150,480); drag.relative=Vector2(0,-72)
+	Input.parse_input_event(drag)
+	await get_tree().create_timer(.6).timeout
+	assert(world.foot.distance_to(before)>1.5,"Joystick moves a physical character")
+	var animation: AnimationPlayer = world.player.find_children("*","AnimationPlayer",true,false)[0]
+	assert("walk" in animation.current_animation,"Movement plays the exported skeletal walk")
+	var look := InputEventScreenTouch.new()
+	look.index=2; look.position=Vector2(1000,360); look.pressed=true
+	Input.parse_input_event(look)
+	await get_tree().process_frame
+	var look_drag := InputEventScreenDrag.new()
+	look_drag.index=2; look_drag.position=Vector2(1100,360); look_drag.relative=Vector2(100,0)
+	Input.parse_input_event(look_drag)
+	await get_tree().process_frame
+	assert(absf(world.yaw)>.4,"Second finger orbits independently")
+	world.enabled=false
+	assert(world.stick==Vector2.ZERO and world.move_touch==-1 and world.look_touch==-1,"Opening a menu cancels held touches")
+	world.enabled=true
+	world.foot=Vector2(0,-2)
+	world.yaw=0
+	world.stick=Vector2(0,-1)
+	await get_tree().create_timer(.8).timeout
+	world.reset_input()
+	assert(world.foot.y>-3.9,"The inn counter blocks walking through it")
 	interact("parcel")
 	skip_dialogue()
 	interact("exit_inn")
+	await get_tree().create_timer(.25).timeout
 	await capture("03-village")
+	world.foot=Vector2(1,8)
+	world.yaw=-.75
+	await get_tree().create_timer(.25).timeout
+	await capture("03b-square")
+	world.yaw=PI
+	await get_tree().create_timer(.25).timeout
+	await capture("03c-reverse-camera")
 	interact("orren")
 	skip_dialogue()
 	interact("cael")
@@ -649,6 +680,7 @@ func run_qa() -> void:
 	await capture("04-woodland")
 	interact("cart")
 	skip_dialogue()
+	await get_tree().create_timer(.25).timeout
 	await capture("05-battle")
 	var steps := 0
 	while battle.outcome == "" and steps < 40:
@@ -670,7 +702,7 @@ func run_qa() -> void:
 	await capture("06-opening-complete")
 	refresh_world()
 	interact("exit_inn")
-	world.foot = Vector2(1120,506)
+	world.foot = Vector2(23,9)
 	start_fishing(false)
 	await capture("07-fishing")
 	for cast in range(3):

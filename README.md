@@ -2,7 +2,7 @@
 
 A story-led, turn-based JRPG designed around a mobile playtesting workflow and a zero additional development-spend target.
 
-**The first playable Brackenford opening is implemented in Godot 4.5.1.**
+**The Brackenford opening is now real, freely rotatable 3D in Godot 4.5.1 (0.2.0).**
 
 ![Brackenford in the playable game](docs/preview/village.webp)
 
@@ -12,9 +12,11 @@ or check [the Android build](https://github.com/Jamie1171/Jrpg/actions/workflows
 The opening includes the inn, village and woodland; portrait conversations;
 Rowan and Cael's first battle; optional fishing and a permanent reward; a journal,
 inventory, original music and local saves. It ends with Ysra's arrival, before the
-festival and the raid. The illustrated environments and animated sprites use a
-coherent rendered 2D style. This is an early playable chapter, not the full game.
+festival and the raid. Exploration uses modelled 3D environments, rigged Blender characters, a left
+movement stick and a right-side swipe camera. This is an early 3D art pass, not
+the full game or finished commercial-quality art.
 
+- [3D direction and asset pipeline](docs/production/3d-direction.md)
 - [Phone playtesting guide](docs/production/phone-playtesting.md)
 - [Build and technical notes](docs/production/build-notes.md)
 - [Art and audio provenance](docs/art/asset-manifest.md)

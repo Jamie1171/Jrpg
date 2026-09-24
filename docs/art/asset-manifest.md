@@ -1,8 +1,21 @@
 # Brackenford asset manifest
 
+## Active 3D assets (0.2.0)
+
+Seven original Blender characters and the modular Brackenford kit are in
+`game/assets/models/`. Their editable sources are in `art/blender/`; reproduce
+both with `blender --background --python tools/build_3d_assets.py`.
+Characters use an 11-bone rig and idle/walk/attack clips. Palette colours are
+vertex data, with no downloaded textures or third-party models.
+`game/assets/models/mesh-stats.json` records geometry budgets.
+Dialogue portraits are live renders of these same meshes, cached once per session.
+The music, fonts and original icon below are still used.
+
+## Archived 2D art (0.1.0; excluded from the APK)
+
 Created 20 September 2026 for the first playable opening of The Unfinished Dawn.
 These are original generated illustrations, not extracted commercial game assets.
-The final game uses compressed WebP copies at the original generated dimensions;
+The earlier 0.1.0 preview used compressed WebP copies at the original generated dimensions;
 transparent sprite sheets retain their alpha channel. Cropping into animation and
 portrait cells is performed by Godot at runtime. There is no image generation API
 dependency when playing or building the game.
