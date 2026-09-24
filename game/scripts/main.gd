@@ -833,6 +833,8 @@ func controller_move_focus(direction: Vector2) -> void:
 		var forward := offset.dot(direction)
 		if forward<=1: continue
 		var sideways := absf(offset.cross(direction))
+		# Horizontal movement stays in its row, including when a stick is held.
+		if direction.x!=0 and sideways>maxf(40,(current.size.y+item.size.y)*.5): continue
 		var candidate := forward+sideways*3
 		if candidate<score: score=candidate; best=item
 	if is_instance_valid(best): best.grab_focus()
@@ -897,10 +899,10 @@ func run_controller_qa() -> void:
 	await qa_pad_button(JOY_BUTTON_B)
 	await qa_pad_button(JOY_BUTTON_START)
 	qa_pad_axis(JOY_AXIS_LEFT_X,1)
-	await get_tree().create_timer(.1).timeout
+	await get_tree().create_timer(.6).timeout
 	qa_pad_axis(JOY_AXIS_LEFT_X,0)
 	await get_tree().process_frame
-	assert(get_viewport().gui_get_focus_owner().text=="Settings","Left stick moves the visible menu focus")
+	assert(get_viewport().gui_get_focus_owner().text=="Settings","Held left stick moves within the menu row without jumping to Back")
 	await qa_pad_button(JOY_BUTTON_A)
 	await qa_pad_button(JOY_BUTTON_DPAD_DOWN)
 	var previous_motion: bool=GameState.data.settings.motion
