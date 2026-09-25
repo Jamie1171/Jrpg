@@ -27,6 +27,9 @@ def main():
     print('Sketchfab authentication successful.')
     OUT.mkdir(exist_ok=True)
     uid=os.environ.get('MODEL_UID','').strip()
+    if not uid and os.environ.get('GITHUB_EVENT_NAME')=='push':
+        request=Path('integrations/sketchfab/request.json')
+        if request.exists():uid=json.loads(request.read_text()).get('model_uid','')
     if uid:
         if not re.fullmatch(r'[0-9a-fA-F]{32}',uid):raise RuntimeError('Model UID must be 32 hexadecimal characters')
         m=api('models/'+uid,token)
@@ -40,15 +43,15 @@ def main():
         url=item['url']
         if urllib.parse.urlparse(url).scheme!='https':raise RuntimeError('Download must use HTTPS')
         # Signed asset URL is used only here, never printed or saved in metadata.
-        limit=200*1024*1024
-        if item.get('size',0)>limit:raise RuntimeError('Asset exceeds 200 MB limit')
+        limit=45*1024*1024
+        if item.get('size',0)>limit:raise RuntimeError('Asset exceeds 45 MB limit')
         dest=OUT/('model.glb' if info.get('glb') else 'model.zip')
         try:
             with urllib.request.urlopen(url,timeout=90) as r,dest.open('wb') as f:
                 total=0
                 while data:=r.read(1024*1024):
                     total+=len(data)
-                    if total>limit:raise RuntimeError('Asset exceeds 200 MB limit')
+                    if total>limit:raise RuntimeError('Asset exceeds 45 MB limit')
                     f.write(data)
         except Exception:
             dest.unlink(missing_ok=True)

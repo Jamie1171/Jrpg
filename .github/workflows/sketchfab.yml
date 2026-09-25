@@ -14,7 +14,7 @@ on:
         default: ''
         type: string
 permissions:
-  contents: read
+  contents: write
 jobs:
   assets:
     runs-on: ubuntu-latest
@@ -33,3 +33,13 @@ jobs:
           path: sketchfab-output/
           retention-days: 7
           if-no-files-found: error
+      - name: Save licensed asset handoff branch
+        run: |
+          git config user.name "Jrpg asset importer"
+          git config user.email "asset-importer@users.noreply.github.com"
+          git switch -c "assets/sketchfab-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          mkdir -p art/sketchfab-import
+          cp sketchfab-output/* art/sketchfab-import/
+          git add art/sketchfab-import
+          git commit -m "Save Sketchfab asset handoff with attribution"
+          git push origin HEAD
