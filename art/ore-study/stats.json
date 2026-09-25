@@ -1,0 +1,13 @@
+{
+  "source": "Meshy_AI_Molten_Stone_Cluster_0925203905_texture.glb",
+  "source_bytes": 5272160,
+  "source_triangles": 112658,
+  "output_bytes": 280196,
+  "output_triangles": 6000,
+  "texture_size": [
+    1024,
+    1024
+  ],
+  "height_metres": 1.25,
+  "texture_change": "Soft 25% maximum attenuation of bright neutral/cool markings; orange protected. No claim of repaired UV stretch."
+}

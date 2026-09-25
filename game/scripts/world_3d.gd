@@ -2,6 +2,7 @@ extends Node3D
 ## Metres, genuine perspective geometry, collision and independent multi-touch controls.
 signal interaction(id: String)
 signal moved(pos: Vector2)
+const IRON_ORE = preload("res://assets/models/ore/IronOre.glb")
 const KIT = preload("res://assets/models/Brackenford_Kit.glb")
 const ACTORS = {
 	"Rowan":preload("res://assets/models/Rowan.glb"), "Cael":preload("res://assets/models/Cael.glb"),
@@ -257,6 +258,7 @@ func add_tree(pos: Vector2, scale_value: float = 1) -> void:
 	scene.add_child(crown)
 
 func build_village() -> void:
+	add_iron_outcrop(Vector3(-8,0,3))
 	terrain(Vector2(-7,0),Vector2(50,64),false)
 	floor_patch(Vector2(22,0),Vector2(8,90),Color("478f99"),-.3)
 	floor_patch(Vector2(38,0),Vector2(24,90),Color("699356"),-.08)
@@ -333,6 +335,7 @@ func build_inn() -> void:
 	for x in [-5,5]: prop("lantern",Vector3(x,2.7,-5),Vector3.ONE*.8)
 
 func build_forest() -> void:
+	add_iron_outcrop(Vector3(3,0,12))
 	terrain(Vector2.ZERO,Vector2(38,48),true)
 	prop("cart",Vector3(7,0,-10),Vector3.ONE,-.4)
 	solid(Vector3(7,1,-10),Vector3(2.6,2,3.5))
@@ -348,6 +351,23 @@ func build_forest() -> void:
 	for z in range(-19,22,2):
 		for x in [-4.0,9.5]: prop("grass",Vector3(x+sin(z)*.9,0,z),Vector3.ONE*2)
 	boundary(Vector2(-19,-24),Vector2(19,24))
+
+func add_iron_outcrop(pos: Vector3) -> void:
+	var ore: Node3D = IRON_ORE.instantiate()
+	ore.name = "IronOutcrop"
+	ore.position = pos
+	scene.add_child(ore)
+	var body := StaticBody3D.new()
+	body.collision_layer = 1
+	body.collision_mask = 0
+	var shape := CollisionShape3D.new()
+	var cylinder := CylinderShape3D.new()
+	cylinder.radius = .64
+	cylinder.height = 1.18
+	shape.shape = cylinder
+	shape.position.y = .59
+	body.add_child(shape)
+	ore.add_child(body)
 
 func label_3d(value: String,pos: Vector3,font_size_value: int = 36,pixel: float = .008) -> Label3D:
 	var label := Label3D.new()
