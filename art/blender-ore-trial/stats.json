@@ -1,0 +1,10 @@
+{
+  "triangles": 932,
+  "glb_bytes": 208464,
+  "texture": [
+    1024,
+    1024
+  ],
+  "height_metres": 1.25,
+  "method": "Original scripted meshes and noise materials, baked colour. No generative AI asset input."
+}
