@@ -1,0 +1,18 @@
+{
+  "uid": "f0309cd2e4a347c3996cd7d887cd2d4a",
+  "name": "Stylized Rock",
+  "url": "https://sketchfab.com/3d-models/stylized-rock-f0309cd2e4a347c3996cd7d887cd2d4a",
+  "creator": "Jaspreet Singh",
+  "creator_url": "https://sketchfab.com/gurjasstudios",
+  "license": {
+    "uri": "https://api.sketchfab.com/v3/licenses/322a749bcfa841b29dff1e8a1bb74b0b",
+    "label": "CC Attribution",
+    "fullName": "Creative Commons Attribution",
+    "requirements": "Author must be credited. Commercial use is allowed.",
+    "url": "http://creativecommons.org/licenses/by/4.0/",
+    "slug": "by"
+  },
+  "face_count": 196,
+  "vertex_count": 100,
+  "downloadable": true
+}
