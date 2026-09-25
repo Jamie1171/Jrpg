@@ -1,0 +1,35 @@
+name: Sketchfab asset search and download
+on:
+  push:
+    branches: [main]
+    paths: ['integrations/sketchfab/**', '.github/workflows/sketchfab.yml']
+  workflow_dispatch:
+    inputs:
+      search_query:
+        description: Search words (used when model_uid is empty)
+        default: stylized rock
+        type: string
+      model_uid:
+        description: Optional 32-character Sketchfab model ID to download
+        default: ''
+        type: string
+permissions:
+  contents: read
+jobs:
+  assets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Authenticate and search or download
+        env:
+          SKETCHFAB_API_TOKEN: ${{ secrets.SKETCHFAB_API_TOKEN }}
+          SEARCH_QUERY: ${{ inputs.search_query || 'stylized rock' }}
+          MODEL_UID: ${{ inputs.model_uid }}
+        run: python3 integrations/sketchfab/fetch.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sketchfab-assets
+          path: sketchfab-output/
+          retention-days: 7
+          if-no-files-found: error
