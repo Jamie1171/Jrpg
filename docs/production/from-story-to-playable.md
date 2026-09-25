@@ -4,6 +4,8 @@
 
 The working example is [The Unfinished Dawn](../story/the-unfinished-dawn-treatment.md). The earlier concepts, including The Hearthroad, remain available. This roadmap allows us to test the new direction before committing to the entire campaign.
 
+> **Historical roadmap:** The [current game design and production plan](../design/game-design-and-production-plan.md) now governs future work. The fixed-view 2D proposal below was superseded by the freely rotatable [3D direction](3d-direction.md). The remote build and opening preview already work; the objective is now a complete game with learning as an explicit outcome. Paid tools may be evaluated, but none are required or authorised by this plan.
+
 ## The first outcome
 
 A short Android build in which the player can explore part of Brackenford, meet Rowan's family, travel with Cael, complete a delivery, fight a small encounter, try an optional fishing activity, save and return.

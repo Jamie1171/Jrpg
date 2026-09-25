@@ -76,7 +76,7 @@ The Crown amplifies an existing conflict; it does not explain every historical e
 
 ## 5. The party: why they meet, why they stay
 
-The proposed roster has five eventual permanent companions, plus Cael's substantial early role. Three fight at once. Those numbers are provisional; each character's dramatic purpose matters more than roster size.
+The proposed roster has five eventual permanent companions, plus Cael's substantial early role. This early treatment proposed three fighting at once; the [current design plan](../design/game-design-and-production-plan.md) proposes four, pending confirmation. Those numbers are provisional; each character's dramatic purpose matters more than roster size.
 
 | Character | First meeting and reason to join | Personal conflict | Battle identity | Why they remain involved |
 |---|---|---|---|---|

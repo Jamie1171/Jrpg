@@ -1,6 +1,6 @@
 # Jrpg
 
-A story-led, turn-based JRPG designed around a mobile playtesting workflow and a zero additional development-spend target.
+A story-led, turn-based 3D JRPG designed around a mobile playtesting workflow. The goal is a complete game and practical learning through its development; commercial release is an optional additional outcome. Keep costs low and evaluate paid tools only when they offer a demonstrated benefit.
 
 **The Brackenford opening is now real, freely rotatable 3D in Godot 4.5.1 (0.2.1).**
 
@@ -16,6 +16,7 @@ festival and the raid. Exploration uses modelled 3D environments, rigged Blender
 movement stick and a right-side swipe camera. This is an early 3D art pass, not
 the full game or finished commercial-quality art.
 
+- [Current game design and production plan](docs/design/game-design-and-production-plan.md): combat, progression, equipment, parallel crafting routes, random enchanting, exploration and milestones toward the complete game.
 - [3D direction and asset pipeline](docs/production/3d-direction.md)
 - [Xbox controller controls](docs/production/controller-controls.md)
 - [Phone playtesting guide](docs/production/phone-playtesting.md)
@@ -24,7 +25,7 @@ the full game or finished commercial-quality art.
 
 Current creative direction: a cohesive adventure with loss, betrayal, developing party relationships and a decisive confrontation with its main antagonist. Mining, crafting, fishing and other trades offer substantial optional achievement and rewards alongside that story.
 
-- [From story to a playable Android game](docs/production/from-story-to-playable.md): production order, visual approach, remote builds and the first Brackenford milestone.
+- [From story to a playable Android game](docs/production/from-story-to-playable.md): historical initial roadmap; its 2D visual proposal and initial scope are superseded by the current plan.
 - [The Unfinished Dawn — alternative story treatment](docs/story/the-unfinished-dawn-treatment.md): protagonist, antagonist, staggered companion recruitment, revealed backstory, betrayal, chapter progression and ending; includes a separate optional trade progression.
 - [Android JRPG research and story foundations](docs/research/android-jrpg-market-and-story-foundations.md): the original investigation and earlier concepts. **The Hearthroad remains an available option**, alongside The Names We Keep and The Wandering Table. Its recommendation reflects the earlier brief, not a final selection.
 
