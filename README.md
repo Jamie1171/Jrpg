@@ -1,5 +1,7 @@
 # Jrpg
 
+**Project status (6 October 2026): implementation paused; planning continues.** Future chats and contributors should start with [AGENTS.md](AGENTS.md) and the [project handoff index](docs/START-HERE.md), which records the latest workflow, reuse-first rule and proposed art direction.
+
 A story-led, turn-based 3D JRPG designed around a mobile playtesting workflow. The goal is a complete game and practical learning through its development; commercial release is an optional additional outcome. Keep costs low and evaluate paid tools only when they offer a demonstrated benefit.
 
 **The Brackenford opening is now real, freely rotatable 3D in Godot 4.5.1 (0.2.2).**
